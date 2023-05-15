@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Translator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+    #container {
+      width: 50%;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px #ccc;
+    }
+    #inputBox {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+    #resultBox {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <input type="text" id="inputBox" placeholder="Enter text here..." oninput="translateText()">
+    <textarea id="resultBox" placeholder="Translation result..." rows="5" readonly></textarea>
+  </div>
+
+  <script>
+    function translateText() {
+      const input = document.getElementById('inputBox').value;
+      const xhr = new XMLHttpRequest();
+      const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=' + (isEnglish(input) ? 'fil' : 'en') + '&dt=t&q=' + encodeURI(input);
+      xhr.open('GET', url, true);
+      xhr.send();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          const result = JSON.parse(xhr.responseText);
+          const translation = result[0].map((item) => item[0]).join(';');
+          document.getElementById('resultBox').value = translation;
+        }
+      };
+    }
+    
+    function isEnglish(str) {
+      return /[A-Za-z]/.test(str);
+    }
+  </script>
+</body>
+</html>
